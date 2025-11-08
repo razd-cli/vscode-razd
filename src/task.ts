@@ -215,11 +215,22 @@ export class TaskExtension {
           return;
         }
 
-        vscode.window.showQuickPick(items).then((item) => {
-          if (item && item instanceof QuickPickTaskItem) {
-            taskfileSvc.runTask(item.label, item.namespace.workspace);
-          }
-        });
+        // Find the default task item for pre-selection
+        const defaultTaskItem = items.find(
+          (item) =>
+            item instanceof QuickPickTaskItem && item.label === 'default'
+        );
+
+        vscode.window
+          .showQuickPick(items, {
+            placeHolder: 'Select a task to run',
+            ...(defaultTaskItem && { activeItem: defaultTaskItem })
+          })
+          .then((item) => {
+            if (item && item instanceof QuickPickTaskItem) {
+              taskfileSvc.runTask(item.label, item.namespace.workspace);
+            }
+          });
       })
     );
 
@@ -236,26 +247,37 @@ export class TaskExtension {
             return;
           }
 
-          vscode.window.showQuickPick(items).then((item) => {
-            vscode.window
-              .showInputBox({
-                prompt: RUNTASKWITHARGS_PROMPT,
-                placeHolder: RUNTASKWITHARGS_PLACEHOLDER
-              })
-              .then((cliArgsInput) => {
-                if (cliArgsInput === undefined) {
-                  vscode.window.showInformationMessage('No Args Supplied');
-                  return;
-                }
-                if (item && item instanceof QuickPickTaskItem) {
-                  taskfileSvc.runTask(
-                    item.label,
-                    item.namespace.workspace,
-                    cliArgsInput
-                  );
-                }
-              });
-          });
+          // Find the default task item for pre-selection
+          const defaultTaskItem = items.find(
+            (item) =>
+              item instanceof QuickPickTaskItem && item.label === 'default'
+          );
+
+          vscode.window
+            .showQuickPick(items, {
+              placeHolder: 'Select a task to run with arguments',
+              ...(defaultTaskItem && { activeItem: defaultTaskItem })
+            })
+            .then((item) => {
+              vscode.window
+                .showInputBox({
+                  prompt: RUNTASKWITHARGS_PROMPT,
+                  placeHolder: RUNTASKWITHARGS_PLACEHOLDER
+                })
+                .then((cliArgsInput) => {
+                  if (cliArgsInput === undefined) {
+                    vscode.window.showInformationMessage('No Args Supplied');
+                    return;
+                  }
+                  if (item && item instanceof QuickPickTaskItem) {
+                    taskfileSvc.runTask(
+                      item.label,
+                      item.namespace.workspace,
+                      cliArgsInput
+                    );
+                  }
+                });
+            });
         }
       )
     );
@@ -291,24 +313,29 @@ export class TaskExtension {
         'vscode-razd.goToDefinitionPicker',
         () => {
           log.info('Command: vscode-razd.goToDefinitionPicker');
-          let items: vscode.QuickPickItem[] = [];
-          this._taskfiles.forEach((taskfile) => {
-            if (taskfile.tasks.length > 0) {
-              items = items.concat(new QuickPickTaskSeparator(taskfile));
-              taskfile.tasks.forEach((task) => {
-                items = items.concat(new QuickPickTaskItem(taskfile, task));
-              });
-            }
-          });
+          let items: vscode.QuickPickItem[] = this._loadTasksFromTaskfile();
+
           if (items.length === 0) {
             vscode.window.showInformationMessage('No tasks found');
             return;
           }
-          vscode.window.showQuickPick(items).then((item) => {
-            if (item && item instanceof QuickPickTaskItem) {
-              taskfileSvc.goToDefinition(item.task);
-            }
-          });
+
+          // Find the default task item for pre-selection
+          const defaultTaskItem = items.find(
+            (item) =>
+              item instanceof QuickPickTaskItem && item.label === 'default'
+          );
+
+          vscode.window
+            .showQuickPick(items, {
+              placeHolder: 'Select a task to view its definition',
+              ...(defaultTaskItem && { activeItem: defaultTaskItem })
+            })
+            .then((item) => {
+              if (item && item instanceof QuickPickTaskItem) {
+                taskfileSvc.goToDefinition(item.task);
+              }
+            });
         }
       )
     );
@@ -333,7 +360,7 @@ export class TaskExtension {
       })
     );
 
-    // Run Razd - initialize with razd up --init
+    // Run Razd - open task picker with default pre-selected
     context.subscriptions.push(
       vscode.commands.registerCommand('vscode-razd.runRazd', () => {
         log.info('Command: vscode-razd.runRazd');
@@ -344,11 +371,23 @@ export class TaskExtension {
           return;
         }
 
-        vscode.window.showQuickPick(items).then((item) => {
-          if (item && item instanceof QuickPickTaskItem) {
-            taskfileSvc.runTask(item.label, item.namespace.workspace);
-          }
-        });
+        // Find the default task item (skip separators)
+        const defaultTaskItem = items.find(
+          (item) =>
+            item instanceof QuickPickTaskItem && item.label === 'default'
+        );
+
+        vscode.window
+          .showQuickPick(items, {
+            placeHolder: 'Select a task to run',
+            // Pre-select default if found
+            ...(defaultTaskItem && { activeItem: defaultTaskItem })
+          })
+          .then((item) => {
+            if (item && item instanceof QuickPickTaskItem) {
+              taskfileSvc.runTask(item.label, item.namespace.workspace);
+            }
+          });
       })
     );
 
@@ -401,7 +440,15 @@ export class TaskExtension {
     this._taskfiles.forEach((taskfile) => {
       if (taskfile.tasks.length > 0) {
         items = items.concat(new QuickPickTaskSeparator(taskfile));
-        taskfile.tasks.forEach((task) => {
+
+        // Sort tasks: 'default' first, then rest in original order
+        const sortedTasks = [...taskfile.tasks].sort((a, b) => {
+          if (a.name === 'default') return -1;
+          if (b.name === 'default') return 1;
+          return 0;
+        });
+
+        sortedTasks.forEach((task) => {
           items = items.concat(new QuickPickTaskItem(taskfile, task));
         });
       }
