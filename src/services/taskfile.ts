@@ -267,7 +267,7 @@ class TaskfileService {
     }
     if (['Update', 'Install'].includes(value)) {
       vscode.env.openExternal(
-        vscode.Uri.parse('https://taskfile.dev/installation')
+        vscode.Uri.parse('https://razd-cli.github.io/docs/installation/')
       );
       return;
     }
