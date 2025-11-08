@@ -1,26 +1,27 @@
 <div align="center">
-  <a href="https://taskfile.dev">
-    <img src="./res/task.png" />
-  </a>
-  <a href="https://taskfile.dev">
-    <img src="./res/vscode.png"/>
-  </a>
-
-  <h1>Task for Visual Studio Code</h1>
+  <h1>Razd for Visual Studio Code</h1>
 
   <p>
-    <a href="https://taskfile.dev">Task</a> is a task runner / build tool that aims to be simpler and easier to use than, for example, <a href="https://www.gnu.org/software/make/">GNU Make<a>.
+    Visual Studio Code extension for <a href="https://github.com/razd-cli/razd"><strong>Razd</strong></a> - 
+    a modern project setup tool that orchestrates <a href="https://github.com/jdx/mise">mise</a> and 
+    <a href="https://taskfile.dev">taskfile</a> for one-command project initialization.
   </p>
 
   <p>
-    <a href="https://taskfile.dev/installation/">Installation</a> | <a href="https://taskfile.dev/usage/">Documentation</a> | <a href="https://twitter.com/taskfiledev">Twitter</a> | <a href="https://bsky.app/profile/taskfile.dev">Bluesky</a> | <a href="https://fosstodon.org/@task">Mastodon</a> | <a href="https://discord.gg/6TY36E39UK">Discord</a>
+    This extension provides task runner functionality with support for both <code>Taskfile.yml</code> and <code>Razdfile.yml</code> formats.
+  </p>
+
+  <p>
+    <a href="https://github.com/razd-cli/vscode-razd">GitHub</a> | 
+    <a href="https://github.com/razd-cli/vscode-razd/issues">Issues</a> | 
+    <a href="https://razd-cli.github.io/docs">Documentation</a> | 
+    <a href="https://t.me/razd_cli">Telegram</a>
   </p>
 </div>
 
 ## Installation
 
-- [Visual Studio Code | Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=task.vscode-task)
-- [VSCodium | Open VSX Registry](https://open-vsx.org/extension/task/vscode-task)
+Install from [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=razd-cli.vscode-razd)
 
 ## Features
 
@@ -34,17 +35,17 @@
 
 ---
 
-![Task for Visual Studio Code Preview](./res/preview.png)
+![Razd for Visual Studio Code Preview](./res/preview.png)
 
 ## Configuration
 
 | Setting              | Type      | Allowed Values                    | Default     | Description                                                                                                                                   |
 | -------------------- | --------- | --------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `updateOn`           | `string`  | `"manual"`, `"save"`              | `"save"`    | When the list of tasks should be updated.                                                                                                     |
-| `path`               | `string`  |                                   | `"task"`    | Path to the Task binary. Can also the name of a binary in your `$PATH`. If Task is installed via Snap, set this to `/snap/task/current/task`. |
+| `path`               | `string`  |                                   | `"razd"`    | Path to the Razd/Task binary. Can also be the name of a binary in your `$PATH`.                                                              |
 | `outputTo`           | `string`  | `"output"`, `"terminal"`          | `"output"`  | Where to print the output of tasks. Note that the output panel does not support ANSI colors.                                                  |
 | `checkForUpdates`    | `boolean` |                                   | `true`      | Check if there is a newer version of Task on startup.                                                                                         |
 | `doubleClickTimeout` | `number`  |                                   | `0`         | Time in milliseconds to consider a double-click. 0 disables double-click to run. 500 is a good starting point if you want to enable it.       |
 | `tree.nesting`       | `boolean` |                                   | `true`      | Whether to nest tasks by their namespace in the tree view.                                                                                    |
-| `tree.status`        | `boolean` |                                   | `false`     | Whether to show the status of tasks in the tree view (may be slow on large Taskfiles).                                                        |
+| `tree.status`        | `boolean` |                                   | `false`     | Whether to show the status of tasks in the tree view (may be slow on large Taskfiles/Razdfiles).                                              |
 | `tree.sort`          | `sort`    | `default`, `alphanumeric`, `none` | `"default"` | The order in which to display tasks in the tree view.                                                                                         |
