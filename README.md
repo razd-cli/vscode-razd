@@ -30,6 +30,7 @@
 - Run last task command.
 - Multi-root workspace support.
 - Initialize a Taskfile in the current workspace.
+- Supports both `Taskfile.yml` and `Razdfile.yml` formats.
 
 ---
 

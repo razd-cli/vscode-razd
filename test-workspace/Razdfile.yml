@@ -1,0 +1,9 @@
+version: '3'
+mise:
+  tools:
+    task: latest
+tasks:
+  hello:
+    desc: Test task from Razdfile
+    cmds:
+      - echo "Hello from Razdfile!"

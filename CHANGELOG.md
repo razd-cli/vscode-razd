@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added support for `Razdfile.yml` (and variants: `Razdfile.yaml`, `razdfile.yml`, `razdfile.yaml`) in addition to `Taskfile.yml`.
+  - When both file types are present, `Taskfile.yml` takes priority for backward compatibility.
 - Bumped the minimum required version of `task` to v3.45.3.
 - Fixed a bug where custom sorting and nesting would not work together (#214 by
   @pd93).
