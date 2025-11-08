@@ -122,11 +122,18 @@ class TaskfileService {
       return cliPath;
     }
 
-    // For Razd CLI, add 'list' subcommand when using --list-all
+    // For Razd CLI, add appropriate subcommand
     let processedCommand = command;
-    if (isRazd && command.includes('--list-all')) {
-      processedCommand = `list ${command}`;
-      log.info(`Using Razd CLI: adding 'list' subcommand`);
+    if (isRazd) {
+      if (command.includes('--list-all')) {
+        // List tasks: razd list --list-all --json
+        processedCommand = `list ${command}`;
+        log.info(`Using Razd CLI: adding 'list' subcommand`);
+      } else if (!command.startsWith('--')) {
+        // Run task: razd run <task-name>
+        processedCommand = `run ${command}`;
+        log.info(`Using Razd CLI: adding 'run' subcommand for task execution`);
+      }
     }
 
     const finalCommand =
