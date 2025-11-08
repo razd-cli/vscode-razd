@@ -5,7 +5,7 @@
   "homepage": "https://github.com/razd-cli/vscode-razd",
   "icon": "res/icon.png",
   "license": "MIT",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "publisher": "razd-cli",
   "author": {
     "name": "Razd Contributors",
