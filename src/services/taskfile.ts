@@ -364,12 +364,12 @@ class TaskfileService {
         command,
         { cwd: dir },
         (err: cp.ExecException | null, stdout: string, stderr: string) => {
-          // TODO: Cleanup temporary file - currently disabled for debugging
-          // if (tempFilePath) {
-          //   setTimeout(() => {
-          //     this.deleteTempTaskfile(tempFilePath);
-          //   }, 1000);
-          // }
+          // Cleanup temporary file with delay to allow for concurrent reads
+          if (tempFilePath) {
+            setTimeout(() => {
+              this.deleteTempTaskfile(tempFilePath);
+            }, 4000); // 4 second delay to allow for multiple workspace folders
+          }
 
           if (err) {
             log.error(err);
