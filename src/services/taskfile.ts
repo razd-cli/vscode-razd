@@ -24,7 +24,8 @@ type ReleaseRequest =
 type ReleaseResponse =
   Endpoints['GET /repos/{owner}/{repo}/releases/latest']['response'];
 
-const minimumRequiredVersion = '3.45.3';
+const minimumRequiredVersionTask = '3.45.3';
+const minimumRequiredVersionRazd = '0.5.0';
 
 // General exit codes
 const errCodeOK = 0;
@@ -83,26 +84,37 @@ class TaskfileService {
     return undefined;
   }
 
+  /**
+   * Detects if the configured CLI is Razd or Task
+   * @returns true if Razd CLI, false if Task CLI
+   */
+  private isRazdCli(): boolean {
+    const cliPath = settings.path.toLowerCase();
+    return cliPath.includes('razd');
+  }
+
   private command(
     command?: string,
     cliArgs?: string,
     taskfilePath?: string
   ): string {
     const cliPath = settings.path;
+    const isRazd = this.isRazdCli();
     let taskfileOption = '';
 
-    // If we detected a Razdfile (check both original and temp files), add --taskfile option
-    if (taskfilePath) {
+    // For Razd CLI, we don't use --taskfile flag - it auto-detects Razdfile.yml
+    // For Task CLI, add --taskfile option only for Razdfile to ensure it's recognized
+    if (taskfilePath && !isRazd) {
       const basename = path.basename(taskfilePath).toLowerCase();
       log.info(
         `command() called with taskfilePath: "${taskfilePath}", basename: "${basename}"`
       );
-      // Check if it's a Razdfile or a temp file created from Razdfile
+      // Check if it's a Razdfile - Task CLI needs explicit flag for non-standard names
       if (basename.startsWith('razd') || basename.includes('razdfile')) {
         taskfileOption = `--taskfile ${taskfilePath}`;
-        log.info(`Using --taskfile option: "${taskfileOption}"`);
+        log.info(`Using --taskfile option for Task CLI: "${taskfileOption}"`);
       } else {
-        log.info(`Not a Razdfile, using default behavior`);
+        log.info(`Standard Taskfile, using default behavior`);
       }
     }
 
@@ -110,14 +122,21 @@ class TaskfileService {
       return cliPath;
     }
 
+    // For Razd CLI, add 'list' subcommand when using --list-all
+    let processedCommand = command;
+    if (isRazd && command.includes('--list-all')) {
+      processedCommand = `list ${command}`;
+      log.info(`Using Razd CLI: adding 'list' subcommand`);
+    }
+
     const finalCommand =
       cliArgs === undefined
         ? taskfileOption
-          ? `${cliPath} ${taskfileOption} ${command}`
-          : `${cliPath} ${command}`
+          ? `${cliPath} ${taskfileOption} ${processedCommand}`
+          : `${cliPath} ${processedCommand}`
         : taskfileOption
-        ? `${cliPath} ${taskfileOption} ${command} -- ${cliArgs}`
-        : `${cliPath} ${command} -- ${cliArgs}`;
+        ? `${cliPath} ${taskfileOption} ${processedCommand} -- ${cliArgs}`
+        : `${cliPath} ${processedCommand} -- ${cliArgs}`;
 
     log.info(`Final command: "${finalCommand}"`);
     return finalCommand;
@@ -197,34 +216,42 @@ class TaskfileService {
       cp.exec(command, { cwd }, (_, stdout: string, stderr: string) => {
         // If the version is a devel version, ignore all version checks
         if (stdout.includes('+')) {
-          log.info('Using development version of task');
+          log.info('Using development version');
           this.version = new semver.SemVer('999.0.0');
           return resolve('ready');
         }
 
-        // Get the installed version of task (if any)
+        // Get the installed version (if any)
         this.version = this.parseVersion(stdout);
 
-        // If there is an error fetching the version, assume task is not installed
+        // If there is an error fetching the version, assume CLI is not installed
         if (stderr !== '' || this.version === undefined) {
+          const isRazd = this.isRazdCli();
+          const cliName = isRazd ? 'Razd' : 'Task';
           log.error(this.version ? stderr : 'Version is undefined');
           vscode.window
-            .showErrorMessage('Task command not found.', 'Install')
-            .then(this.buttonCallback);
+            .showErrorMessage(`${cliName} command not found.`, 'Install')
+            .then(this.buttonCallback.bind(this));
           return resolve('notInstalled');
         }
 
         // If the current version is older than the minimum required version, show an error
+        const isRazd = this.isRazdCli();
+        const cliName = isRazd ? 'Razd' : 'Task';
+        const minimumRequiredVersion = isRazd
+          ? minimumRequiredVersionRazd
+          : minimumRequiredVersionTask;
+
         if (this.version && this.version.compare(minimumRequiredVersion) < 0) {
           log.error(
-            `Task v${minimumRequiredVersion} is required to run this extension. The current version is v${this.version}`
+            `${cliName} v${minimumRequiredVersion} is required to run this extension. The current version is v${this.version}`
           );
           vscode.window
             .showErrorMessage(
-              `Task v${minimumRequiredVersion} is required to run this extension. The current version is v${this.version}.`,
+              `${cliName} v${minimumRequiredVersion} is required to run this extension. The current version is v${this.version}.`,
               'Update'
             )
-            .then(this.buttonCallback);
+            .then(this.buttonCallback.bind(this));
           return resolve('outOfDate');
         }
 
@@ -233,20 +260,22 @@ class TaskfileService {
         if (checkForUpdates) {
           this.getLatestVersion()
             .then((latestVersion) => {
+              const isRazd = this.isRazdCli();
+              const cliName = isRazd ? 'Razd' : 'Task';
               if (
                 this.version &&
                 latestVersion &&
                 this.version.compare(latestVersion) < 0
               ) {
                 log.info(
-                  `A new version of Task is available. Current version: v${this.version}, Latest version: v${latestVersion}`
+                  `A new version of ${cliName} is available. Current version: v${this.version}, Latest version: v${latestVersion}`
                 );
                 vscode.window
                   .showInformationMessage(
-                    `A new version of Task is available. Current version: v${this.version}, Latest version: v${latestVersion}`,
+                    `A new version of ${cliName} is available. Current version: v${this.version}, Latest version: v${latestVersion}`,
                     'Update'
                   )
-                  .then(this.buttonCallback);
+                  .then(this.buttonCallback.bind(this));
               }
               return resolve('ready');
             })
@@ -266,18 +295,27 @@ class TaskfileService {
       return;
     }
     if (['Update', 'Install'].includes(value)) {
-      vscode.env.openExternal(
-        vscode.Uri.parse('https://razd-cli.github.io/docs/installation/')
-      );
+      const isRazd = this.isRazdCli();
+      const url = isRazd
+        ? 'https://razd-cli.github.io/docs/installation/'
+        : 'https://taskfile.dev/installation/';
+      vscode.env.openExternal(vscode.Uri.parse(url));
       return;
     }
   }
 
   async getLatestVersion(): Promise<semver.SemVer | null> {
-    log.info(`Calling GitHub to get the latest version`);
+    const isRazd = this.isRazdCli();
+    const repoInfo = isRazd
+      ? { owner: 'razd-cli', repo: 'razd' }
+      : { owner: 'go-task', repo: 'task' };
+
+    log.info(
+      `Calling GitHub to get the latest version from ${repoInfo.owner}/${repoInfo.repo}`
+    );
     let request: ReleaseRequest = {
-      owner: 'go-task',
-      repo: 'task'
+      owner: repoInfo.owner,
+      repo: repoInfo.repo
     };
     let response: ReleaseResponse = await octokit.rest.repos.getLatestRelease(
       request
@@ -348,17 +386,22 @@ class TaskfileService {
     const fileToUse = tempFilePath || filePath;
 
     return await new Promise((resolve, reject) => {
+      const isRazd = this.isRazdCli();
       let flags = ['--list-all', '--json'];
-      // Optional flags
-      if (settings.tree.sort !== TreeSort.default) {
-        flags.push(`--sort ${settings.tree.sort}`);
+
+      // Optional flags - only for Task CLI, Razd doesn't support these
+      if (!isRazd) {
+        if (settings.tree.sort !== TreeSort.default) {
+          flags.push(`--sort ${settings.tree.sort}`);
+        }
+        if (nesting) {
+          flags.push(`--nested`);
+        }
+        if (!status) {
+          flags.push(`--no-status`);
+        }
       }
-      if (nesting) {
-        flags.push(`--nested`);
-      }
-      if (!status) {
-        flags.push(`--no-status`);
-      }
+
       let command = this.command(`${flags.join(' ')}`, undefined, fileToUse);
       cp.exec(
         command,

@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+### Breaking Changes
+
+- **Changed default CLI from Task to Razd**
+  - The default value for `taskfile.path` is now `"razd"` instead of `"task"`
+  - Users with Task CLI installed but not Razd will need to configure `taskfile.path: "task"` in settings
+  - The extension now uses `razd list --list-all --json` command structure instead of `task --list-all --json`
+
+### Added
+
+- Added support for Razd CLI as the primary command-line tool
+  - Automatic detection of CLI type (Razd vs Task) based on configured path
+  - Proper support for `razd list` subcommand when listing tasks
+  - GitHub version checking now uses `razd-cli/razd` repository for Razd CLI
+  - Error messages and installation links are context-aware (show Razd or Task depending on configuration)
+  
+### Migration Guide
+
+If you want to continue using Task CLI:
+1. Open VS Code settings (Ctrl+, or Cmd+,)
+2. Search for "taskfile.path"
+3. Set the value to `"task"`
+
+### Previous Changes
+
 - Added support for `Razdfile.yml` (and variants: `Razdfile.yaml`, `razdfile.yml`, `razdfile.yaml`) in addition to `Taskfile.yml`.
   - When both file types are present, `Taskfile.yml` takes priority for backward compatibility.
 - Bumped the minimum required version of `task` to v3.45.3.

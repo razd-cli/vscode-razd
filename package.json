@@ -290,8 +290,8 @@
             },
             "path": {
               "type": "string",
-              "default": "task",
-              "description": "Path to the Task binary. Can also the name of a binary in your `$PATH`."
+              "default": "razd",
+              "markdownDescription": "Path to the Razd/Task binary. Can be a binary name in your `$PATH` or an absolute path. Set to `task` to use Task CLI instead of Razd."
             },
             "outputTo": {
               "type": "string",

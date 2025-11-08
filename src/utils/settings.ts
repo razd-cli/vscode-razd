@@ -1,146 +1,155 @@
 import * as vscode from 'vscode';
 import { log } from './log.js';
 
-export const configKey = "taskfile";
-export const oldConfigKey = "task";
+export const configKey = 'taskfile';
+export const oldConfigKey = 'task';
 const oldConfigKeys = [
-    "updateOn",
-    "path",
-    "outputTo",
-    "checkForUpdates",
-    "doubleClickTimeout",
-    "tree.nesting",
-    "tree.status",
-    "tree.sort",
-    "terminal.per",
-    "terminal.close",
+  'updateOn',
+  'path',
+  'outputTo',
+  'checkForUpdates',
+  'doubleClickTimeout',
+  'tree.nesting',
+  'tree.status',
+  'tree.sort',
+  'terminal.per',
+  'terminal.close'
 ];
 
 class Settings {
-    private static _instance: Settings;
-    public updateOn!: UpdateOn;
-    public path!: string;
-    public outputTo!: OutputTo;
-    public checkForUpdates!: boolean;
-    public doubleClickTimeout!: number;
-    public tree!: TreeSettings;
-    public terminal!: TerminalSettings;
+  private static _instance: Settings;
+  public updateOn!: UpdateOn;
+  public path!: string;
+  public outputTo!: OutputTo;
+  public checkForUpdates!: boolean;
+  public doubleClickTimeout!: number;
+  public tree!: TreeSettings;
+  public terminal!: TerminalSettings;
 
-    constructor() {
-        this.update();
+  constructor() {
+    this.update();
+  }
+
+  public static get instance() {
+    return this._instance ?? (this._instance = new this());
+  }
+
+  // Fetches all the settings from the workspace configuration file
+  public update() {
+    log.info('Updating settings');
+
+    // Check if the old configuration still exists
+    const oldConfig = vscode.workspace.getConfiguration(oldConfigKey);
+    if (oldConfigKeys.some((key) => oldConfig.has(key))) {
+      vscode.window
+        .showWarningMessage(
+          `Task changed its configuration namespace from "${oldConfigKey}" to "${configKey}". Your task settings will not be applied until you update your settings accordingly.`,
+          'More Info'
+        )
+        .then((selection) => {
+          if (selection === 'More Info') {
+            vscode.env.openExternal(
+              vscode.Uri.parse(
+                'https://taskfile.dev/docs/integrations#configuration-namespace-change'
+              )
+            );
+          }
+        });
     }
 
-    public static get instance() {
-        return this._instance ?? (this._instance = new this());
-    }
+    // Get the workspace config
+    let config = vscode.workspace.getConfiguration(configKey);
 
-    // Fetches all the settings from the workspace configuration file
-    public update() {
-        log.info("Updating settings");
-
-        // Check if the old configuration still exists
-        const oldConfig = vscode.workspace.getConfiguration(oldConfigKey);
-        if (oldConfigKeys.some(key => oldConfig.has(key))) {
-            vscode.window.showWarningMessage(`Task changed its configuration namespace from "${oldConfigKey}" to "${configKey}". Your task settings will not be applied until you update your settings accordingly.`, "More Info").then(selection => {
-                if (selection === "More Info") {
-                    vscode.env.openExternal(vscode.Uri.parse("https://taskfile.dev/docs/integrations#configuration-namespace-change"));
-                }
-            });
-        }
-
-        // Get the workspace config
-        let config = vscode.workspace.getConfiguration(configKey);
-
-        // Set the properties
-        this.updateOn = config.get("updateOn") ?? UpdateOn.save;
-        this.path = config.get("path") ?? "task";
-        this.outputTo = config.get("outputTo") ?? OutputTo.output;
-        this.checkForUpdates = config.get("checkForUpdates") ?? true;
-        this.doubleClickTimeout = config.get("doubleClickTimeout") ?? 0;
-        this.tree = new TreeSettings();
-        this.terminal = new TerminalSettings();
-    }
+    // Set the properties
+    this.updateOn = config.get('updateOn') ?? UpdateOn.save;
+    this.path = config.get('path') ?? 'razd';
+    this.outputTo = config.get('outputTo') ?? OutputTo.output;
+    this.checkForUpdates = config.get('checkForUpdates') ?? true;
+    this.doubleClickTimeout = config.get('doubleClickTimeout') ?? 0;
+    this.tree = new TreeSettings();
+    this.terminal = new TerminalSettings();
+  }
 }
 
 export enum OutputTo {
-    output = "output",
-    terminal = "terminal"
+  output = 'output',
+  terminal = 'terminal'
 }
 
 export enum UpdateOn {
-    save = "save",
-    manual = "manual"
+  save = 'save',
+  manual = 'manual'
 }
 
 class TreeSettings {
-    private static _instance: TreeSettings;
-    public nesting!: boolean;
-    public status!: boolean;
-    public sort!: TreeSort;
+  private static _instance: TreeSettings;
+  public nesting!: boolean;
+  public status!: boolean;
+  public sort!: TreeSort;
 
-    constructor() {
-        this.update();
-    }
+  constructor() {
+    this.update();
+  }
 
-    public static get instance() {
-        return this._instance ?? (this._instance = new this());
-    }
+  public static get instance() {
+    return this._instance ?? (this._instance = new this());
+  }
 
-    // Fetches all the settings from the workspace configuration file
-    public update() {
-        log.info("Updating tree settings");
+  // Fetches all the settings from the workspace configuration file
+  public update() {
+    log.info('Updating tree settings');
 
-        // Get the workspace config
-        let config = vscode.workspace.getConfiguration(configKey);
+    // Get the workspace config
+    let config = vscode.workspace.getConfiguration(configKey);
 
-        // Set the properties
-        this.nesting = config.get("tree.nesting") ?? true;
-        this.status = config.get("tree.status") ?? false;
-        this.sort = config.get("tree.sort") ?? TreeSort.default;
-    }
+    // Set the properties
+    this.nesting = config.get('tree.nesting') ?? true;
+    this.status = config.get('tree.status') ?? false;
+    this.sort = config.get('tree.sort') ?? TreeSort.default;
+  }
 }
 
 export enum TreeSort {
-    default = "default",
-    alphanumeric = "alphanumeric",
-    none = "none"
+  default = 'default',
+  alphanumeric = 'alphanumeric',
+  none = 'none'
 }
 
 class TerminalSettings {
-    private static _instance: TerminalSettings;
-    public per!: TerminalPer;
-    public close!: TerminalClose;
+  private static _instance: TerminalSettings;
+  public per!: TerminalPer;
+  public close!: TerminalClose;
 
-    constructor() {
-        this.update();
-    }
+  constructor() {
+    this.update();
+  }
 
-    public static get instance() {
-        return this._instance ?? (this._instance = new this());
-    }
+  public static get instance() {
+    return this._instance ?? (this._instance = new this());
+  }
 
-    // Fetches all the settings from the workspace configuration file
-    public update() {
-        log.info("Updating terminal settings");
+  // Fetches all the settings from the workspace configuration file
+  public update() {
+    log.info('Updating terminal settings');
 
-        // Get the workspace config
-        let config = vscode.workspace.getConfiguration(configKey);
+    // Get the workspace config
+    let config = vscode.workspace.getConfiguration(configKey);
 
-        // Set the properties
-        this.per = config.get("terminal.per") ?? TerminalPer.window;
-        this.close = config.get("terminal.close") ?? TerminalClose.never;
-    }
+    // Set the properties
+    this.per = config.get('terminal.per') ?? TerminalPer.window;
+    this.close = config.get('terminal.close') ?? TerminalClose.never;
+  }
 }
 
 export enum TerminalPer {
-    window = "window",
-    task = "task"
+  window = 'window',
+  task = 'task'
 }
 
 export enum TerminalClose {
-    never = "never",
-    taskComplete = "taskComplete",
-    onNextTask = "onNextTask"
+  never = 'never',
+  taskComplete = 'taskComplete',
+  onNextTask = 'onNextTask'
 }
 
 export const settings = Settings.instance;
