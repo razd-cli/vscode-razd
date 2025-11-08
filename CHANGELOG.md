@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Added
+
+- **MCP Tools Support**: Introduced the first MCP (Model Context Protocol) tool - Hello World Tool
+  - Added infrastructure for creating and registering language model tools
+  - Tools can be invoked by AI assistants like GitHub Copilot
+  - Includes base `Tool` abstract class for future tool implementations
+  - Includes `ToolService` for centralized tool management
+  - Hello World tool demonstrates tool confirmation dialogs and VS Code integration
+
 ### Breaking Changes
 
 - **Changed default CLI from Task to Razd**
