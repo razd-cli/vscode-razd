@@ -368,7 +368,7 @@ class TaskfileService {
           if (tempFilePath) {
             setTimeout(() => {
               this.deleteTempTaskfile(tempFilePath);
-            }, 4000); // 4 second delay to allow for multiple workspace folders
+            }, 2000); // 2 second delay to allow for multiple workspace folders
           }
 
           if (err) {
