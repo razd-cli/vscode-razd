@@ -30,7 +30,7 @@ export class TaskExtension {
     this._status = settings.tree.status;
     vscode.commands.executeCommand(
       'setContext',
-      'vscode-task:treeNesting',
+      'vscode-razd:treeNesting',
       this._nesting
     );
   }
@@ -44,7 +44,7 @@ export class TaskExtension {
           // Set the status
           vscode.commands.executeCommand(
             'setContext',
-            'vscode-task:status',
+            'vscode-razd:status',
             status
           );
 
@@ -79,13 +79,13 @@ export class TaskExtension {
         if (rejected.length > 0) {
           vscode.commands.executeCommand(
             'setContext',
-            'vscode-task:status',
+            'vscode-razd:status',
             'error'
           );
         } else if (this._taskfiles.length === 0) {
           vscode.commands.executeCommand(
             'setContext',
-            'vscode-task:status',
+            'vscode-razd:status',
             'noTaskfile'
           );
         }
@@ -107,7 +107,7 @@ export class TaskExtension {
     this.refresh();
     vscode.commands.executeCommand(
       'setContext',
-      'vscode-task:treeNesting',
+      'vscode-razd:treeNesting',
       enabled
     );
   }
@@ -118,8 +118,8 @@ export class TaskExtension {
 
     // Initialise Taskfile
     context.subscriptions.push(
-      vscode.commands.registerCommand('vscode-task.init', () => {
-        log.info('Command: vscode-task.init');
+      vscode.commands.registerCommand('vscode-razd.init', () => {
+        log.info('Command: vscode-razd.init');
         if (vscode.workspace.workspaceFolders?.length === 1) {
           taskfileSvc.init(vscode.workspace.workspaceFolders[0].uri.fsPath);
           return;
@@ -141,24 +141,24 @@ export class TaskExtension {
 
     // Refresh tasks
     context.subscriptions.push(
-      vscode.commands.registerCommand('vscode-task.refresh', () => {
-        log.info('Command: vscode-task.refresh');
+      vscode.commands.registerCommand('vscode-razd.refresh', () => {
+        log.info('Command: vscode-razd.refresh');
         this.refresh(false);
       })
     );
 
     // View tasks as list
     context.subscriptions.push(
-      vscode.commands.registerCommand('vscode-task.viewAsList', () => {
-        log.info('Command: vscode-task.viewAsList');
+      vscode.commands.registerCommand('vscode-razd.viewAsList', () => {
+        log.info('Command: vscode-razd.viewAsList');
         this.setTreeNesting(false);
       })
     );
 
     // View tasks as tree
     context.subscriptions.push(
-      vscode.commands.registerCommand('vscode-task.viewAsTree', () => {
-        log.info('Command: vscode-task.viewAsTree');
+      vscode.commands.registerCommand('vscode-razd.viewAsTree', () => {
+        log.info('Command: vscode-razd.viewAsTree');
         this.setTreeNesting(true);
       })
     );
@@ -166,9 +166,9 @@ export class TaskExtension {
     // Run task
     context.subscriptions.push(
       vscode.commands.registerCommand(
-        'vscode-task.runTask',
+        'vscode-razd.runTask',
         (treeItem?: TaskTreeItem) => {
-          log.info('Command: vscode-task.runTask');
+          log.info('Command: vscode-razd.runTask');
           if (treeItem?.task) {
             taskfileSvc.runTask(treeItem.task.name, treeItem.workspace);
           }
@@ -179,9 +179,9 @@ export class TaskExtension {
     // Run task with args
     context.subscriptions.push(
       vscode.commands.registerCommand(
-        'vscode-task.runTaskWithArgs',
+        'vscode-razd.runTaskWithArgs',
         (treeItem?: TaskTreeItem) => {
-          log.info('vscode-task.runTaskWithArgs');
+          log.info('vscode-razd.runTaskWithArgs');
           if (treeItem?.task) {
             vscode.window
               .showInputBox({
@@ -206,8 +206,8 @@ export class TaskExtension {
 
     // Run task picker
     context.subscriptions.push(
-      vscode.commands.registerCommand('vscode-task.runTaskPicker', () => {
-        log.info('Command: vscode-task.runTaskPicker');
+      vscode.commands.registerCommand('vscode-razd.runTaskPicker', () => {
+        log.info('Command: vscode-razd.runTaskPicker');
         let items: vscode.QuickPickItem[] = this._loadTasksFromTaskfile();
 
         if (items.length === 0) {
@@ -226,9 +226,9 @@ export class TaskExtension {
     // Run task picker with args
     context.subscriptions.push(
       vscode.commands.registerCommand(
-        'vscode-task.runTaskPickerWithArgs',
+        'vscode-razd.runTaskPickerWithArgs',
         () => {
-          log.info('Command: vscode-task.runTaskPickerWithArgs');
+          log.info('Command: vscode-razd.runTaskPickerWithArgs');
           let items: vscode.QuickPickItem[] = this._loadTasksFromTaskfile();
 
           if (items.length === 0) {
@@ -262,8 +262,8 @@ export class TaskExtension {
 
     // Run last task
     context.subscriptions.push(
-      vscode.commands.registerCommand('vscode-task.runLastTask', () => {
-        log.info('Command: vscode-task.runLastTask');
+      vscode.commands.registerCommand('vscode-razd.runLastTask', () => {
+        log.info('Command: vscode-razd.runLastTask');
         taskfileSvc.runLastTask();
       })
     );
@@ -271,9 +271,9 @@ export class TaskExtension {
     // Go to definition
     context.subscriptions.push(
       vscode.commands.registerCommand(
-        'vscode-task.goToDefinition',
+        'vscode-razd.goToDefinition',
         (task: TaskTreeItem | Task, preview: boolean = false) => {
-          log.info('Command: vscode-task.goToDefinition');
+          log.info('Command: vscode-razd.goToDefinition');
           if (task instanceof TaskTreeItem) {
             if (task.task === undefined) {
               return;
@@ -288,9 +288,9 @@ export class TaskExtension {
     // Go to definition picker
     context.subscriptions.push(
       vscode.commands.registerCommand(
-        'vscode-task.goToDefinitionPicker',
+        'vscode-razd.goToDefinitionPicker',
         () => {
-          log.info('Command: vscode-task.goToDefinitionPicker');
+          log.info('Command: vscode-razd.goToDefinitionPicker');
           let items: vscode.QuickPickItem[] = [];
           this._taskfiles.forEach((taskfile) => {
             if (taskfile.tasks.length > 0) {
@@ -315,8 +315,8 @@ export class TaskExtension {
 
     // Open installation
     context.subscriptions.push(
-      vscode.commands.registerCommand('vscode-task.openInstallation', () => {
-        log.info('Command: vscode-task.openInstallation');
+      vscode.commands.registerCommand('vscode-razd.openInstallation', () => {
+        log.info('Command: vscode-razd.openInstallation');
         vscode.env.openExternal(
           vscode.Uri.parse('https://taskfile.dev/installation')
         );
@@ -325,15 +325,15 @@ export class TaskExtension {
 
     // Open usage
     context.subscriptions.push(
-      vscode.commands.registerCommand('vscode-task.openUsage', () => {
-        log.info('Command: vscode-task.openUsage');
+      vscode.commands.registerCommand('vscode-razd.openUsage', () => {
+        log.info('Command: vscode-razd.openUsage');
         vscode.env.openExternal(vscode.Uri.parse('https://taskfile.dev/usage'));
       })
     );
 
     // Show debug window
     context.subscriptions.push(
-      vscode.commands.registerCommand('vscode-task.showDebugPanel', () => {
+      vscode.commands.registerCommand('vscode-razd.showDebugPanel', () => {
         log.channel.show();
       })
     );
@@ -417,7 +417,7 @@ export class TaskExtension {
       this.refresh(false);
       vscode.commands.executeCommand(
         'setContext',
-        'vscode-task:treeNesting',
+        'vscode-razd:treeNesting',
         this._nesting
       );
     }

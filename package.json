@@ -1,31 +1,28 @@
 {
-  "name": "vscode-task",
-  "displayName": "Task",
-  "description": "A task runner / build tool that aims to be simpler and easier to use than, for example, GNU Make.",
-  "homepage": "https://taskfile.dev",
+  "name": "vscode-razd",
+  "displayName": "Razd",
+  "description": "Razd task runner for Visual Studio Code (Based on Task/Taskfile)",
+  "homepage": "https://github.com/razd-cli/vscode-razd",
   "icon": "res/icon.png",
   "license": "MIT",
   "version": "0.4.0",
-  "publisher": "task",
+  "publisher": "razd-cli",
   "author": {
-    "name": "Pete Davison",
-    "email": "pd93.uk@outlook.com",
-    "url": "https://github.com/pd93"
+    "name": "Razd Contributors",
+    "url": "https://github.com/razd-cli"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/go-task/vscode-task"
-  },
-  "sponsor": {
-    "url": "https://taskfile.dev/donate"
+    "url": "https://github.com/razd-cli/vscode-razd"
   },
   "bugs": {
-    "url": "https://github.com/go-task/vscode-task/issues"
+    "url": "https://github.com/razd-cli/vscode-razd/issues"
   },
   "keywords": [
+    "razd",
     "task",
-    "go-task",
-    "taskfile"
+    "taskfile",
+    "razdfile"
   ],
   "type": "module",
   "engines": {
@@ -45,180 +42,180 @@
   "contributes": {
     "commands": [
       {
-        "command": "vscode-task.init",
+        "command": "vscode-razd.init",
         "title": "Initialize Taskfile",
-        "category": "Task",
+        "category": "Razd",
         "icon": "$(plus)"
       },
       {
-        "command": "vscode-task.refresh",
+        "command": "vscode-razd.refresh",
         "title": "Refresh Tasks",
-        "category": "Task",
+        "category": "Razd",
         "icon": "$(refresh)"
       },
       {
-        "command": "vscode-task.viewAsList",
+        "command": "vscode-razd.viewAsList",
         "title": "View as List",
-        "category": "Task Tree",
+        "category": "Razd Tree",
         "icon": "$(list-tree)"
       },
       {
-        "command": "vscode-task.viewAsTree",
+        "command": "vscode-razd.viewAsTree",
         "title": "View as Tree",
-        "category": "Task Tree",
+        "category": "Razd Tree",
         "icon": "$(list-flat)"
       },
       {
-        "command": "vscode-task.runTask",
+        "command": "vscode-razd.runTask",
         "title": "Run Task",
-        "category": "Task",
+        "category": "Razd",
         "icon": "$(play)"
       },
       {
-        "command": "vscode-task.runTaskWithArgs",
+        "command": "vscode-razd.runTaskWithArgs",
         "title": "Run Task With Args",
-        "category": "Task",
+        "category": "Razd",
         "icon": "$(run-all)"
       },
       {
-        "command": "vscode-task.runTaskPicker",
+        "command": "vscode-razd.runTaskPicker",
         "title": "Run Task",
-        "category": "Task",
+        "category": "Razd",
         "icon": "$(play)"
       },
       {
-        "command": "vscode-task.runTaskPickerWithArgs",
+        "command": "vscode-razd.runTaskPickerWithArgs",
         "title": "Run Task With Args",
-        "category": "Task",
+        "category": "Razd",
         "icon": "$(play)"
       },
       {
-        "command": "vscode-task.runLastTask",
+        "command": "vscode-razd.runLastTask",
         "title": "Run Last Task",
-        "category": "Task",
+        "category": "Razd",
         "icon": "$(redo)"
       },
       {
-        "command": "vscode-task.goToDefinition",
+        "command": "vscode-razd.goToDefinition",
         "title": "Go to Definition",
-        "category": "Task",
+        "category": "Razd",
         "icon": "$(go-to-file)"
       },
       {
-        "command": "vscode-task.goToDefinitionPicker",
+        "command": "vscode-razd.goToDefinitionPicker",
         "title": "Go to Definition",
-        "category": "Task",
+        "category": "Razd",
         "icon": "$(go-to-file)"
       },
       {
-        "command": "vscode-task.openInstallation",
+        "command": "vscode-razd.openInstallation",
         "title": "Open Installation",
-        "category": "Task",
+        "category": "Razd",
         "icon": "$(globe)"
       },
       {
-        "command": "vscode-task.openUsage",
+        "command": "vscode-razd.openUsage",
         "title": "Open Usage",
-        "category": "Task",
+        "category": "Razd",
         "icon": "$(globe)"
       },
       {
-        "command": "vscode-task.showDebugPanel",
+        "command": "vscode-razd.showDebugPanel",
         "title": "Show Debug Panel",
-        "category": "Task",
+        "category": "Razd",
         "icon": "$(debug)"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "vscode-task",
-          "title": "Task",
+          "id": "vscode-razd",
+          "title": "Razd",
           "icon": "./res/activityBarIcon.svg"
         }
       ]
     },
     "views": {
-      "vscode-task": [
+      "vscode-razd": [
         {
-          "id": "vscode-task.tasks",
+          "id": "vscode-razd.tasks",
           "name": "Tasks"
         }
       ]
     },
     "viewsWelcome": [
       {
-        "view": "vscode-task.tasks",
-        "contents": "Task not installed. Click the button below to install it.\n[Install Task](command:vscode-task.openInstallation)\nTo learn more about how to use Task, [read our docs](https://taskfile.dev).",
-        "when": "vscode-task:status == 'notInstalled'"
+        "view": "vscode-razd.tasks",
+        "contents": "Task not installed. Click the button below to install it.\n[Install Task](command:vscode-razd.openInstallation)\nTo learn more about how to use Task, [read our docs](https://taskfile.dev).",
+        "when": "vscode-razd:status == 'notInstalled'"
       },
       {
-        "view": "vscode-task.tasks",
-        "contents": "Task is out of date. Click the button below to update it.\n[Update Task](command:vscode-task.openInstallation)\nTo learn more about how to use Task, [read our docs](https://taskfile.dev).",
-        "when": "vscode-task:status == 'outOfDate'"
+        "view": "vscode-razd.tasks",
+        "contents": "Task is out of date. Click the button below to update it.\n[Update Task](command:vscode-razd.openInstallation)\nTo learn more about how to use Task, [read our docs](https://taskfile.dev).",
+        "when": "vscode-razd:status == 'outOfDate'"
       },
       {
-        "view": "vscode-task.tasks",
-        "contents": "No Taskfile found in this workspace. Click the button below to get started and initialize a new Taskfile.\n[Initialize Taskfile](command:vscode-task.init)\nTo learn more about how to use Task, [read our docs](https://taskfile.dev).",
-        "when": "vscode-task:status == 'noTaskfile'"
+        "view": "vscode-razd.tasks",
+        "contents": "No Taskfile found in this workspace. Click the button below to get started and initialize a new Taskfile.\n[Initialize Taskfile](command:vscode-razd.init)\nTo learn more about how to use Task, [read our docs](https://taskfile.dev).",
+        "when": "vscode-razd:status == 'noTaskfile'"
       },
       {
-        "view": "vscode-task.tasks",
-        "contents": "An error occurred while reading the Taskfile. [Check the output panel](command:vscode-task.showDebugPanel) for more information\nTo learn more about how to use Task, [read our docs](https://taskfile.dev).",
-        "when": "vscode-task:status == 'error'"
+        "view": "vscode-razd.tasks",
+        "contents": "An error occurred while reading the Taskfile. [Check the output panel](command:vscode-razd.showDebugPanel) for more information\nTo learn more about how to use Task, [read our docs](https://taskfile.dev).",
+        "when": "vscode-razd:status == 'error'"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "vscode-task.runTask",
+          "command": "vscode-razd.runTask",
           "when": "false"
         },
         {
-          "command": "vscode-task.runTaskWithArgs",
+          "command": "vscode-razd.runTaskWithArgs",
           "when": "false"
         },
         {
-          "command": "vscode-task.goToDefinition",
+          "command": "vscode-razd.goToDefinition",
           "when": "false"
         }
       ],
       "view/title": [
         {
-          "command": "vscode-task.openUsage",
-          "when": "view == vscode-task.tasks",
+          "command": "vscode-razd.openUsage",
+          "when": "view == vscode-razd.tasks",
           "group": "navigation@1"
         },
         {
-          "command": "vscode-task.refresh",
-          "when": "view == vscode-task.tasks",
+          "command": "vscode-razd.refresh",
+          "when": "view == vscode-razd.tasks",
           "group": "navigation@2"
         },
         {
-          "command": "vscode-task.viewAsList",
-          "when": "view == vscode-task.tasks && vscode-task:treeNesting",
+          "command": "vscode-razd.viewAsList",
+          "when": "view == vscode-razd.tasks && vscode-razd:treeNesting",
           "group": "navigation@3"
         },
         {
-          "command": "vscode-task.viewAsTree",
-          "when": "view == vscode-task.tasks && !vscode-task:treeNesting",
+          "command": "vscode-razd.viewAsTree",
+          "when": "view == vscode-razd.tasks && !vscode-razd:treeNesting",
           "group": "navigation@4"
         }
       ],
       "view/item/context": [
         {
-          "command": "vscode-task.goToDefinition",
-          "when": "view == vscode-task.tasks && viewItem == taskTreeItem",
+          "command": "vscode-razd.goToDefinition",
+          "when": "view == vscode-razd.tasks && viewItem == taskTreeItem",
           "group": "inline@1"
         },
         {
-          "command": "vscode-task.runTask",
-          "when": "view == vscode-task.tasks && viewItem == taskTreeItem",
+          "command": "vscode-razd.runTask",
+          "when": "view == vscode-razd.tasks && viewItem == taskTreeItem",
           "group": "inline@2"
         },
         {
-          "command": "vscode-task.runTaskWithArgs",
-          "when": "view == vscode-task.tasks && viewItem == taskTreeItem",
+          "command": "vscode-razd.runTaskWithArgs",
+          "when": "view == vscode-razd.tasks && viewItem == taskTreeItem",
           "group": "inline@3"
         }
       ]

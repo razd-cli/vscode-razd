@@ -1,6 +1,7 @@
 mise:
   tools:
     task: latest
+    
 tasks:
   hello:
     desc: Test task from Razdfile
