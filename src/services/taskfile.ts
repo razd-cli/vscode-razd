@@ -389,8 +389,10 @@ class TaskfileService {
     log.info(`Found taskfile: ${filePath}`);
 
     // Create temporary file with version if needed
-    const tempFilePath = await this.createTempTaskfileIfNeeded(filePath);
-    const fileToUse = tempFilePath || filePath;
+    // const tempFilePath = await this.createTempTaskfileIfNeeded(filePath);
+    // const fileToUse = tempFilePath || filePath;
+    const tempFilePath = null;
+    const fileToUse = filePath;
 
     return await new Promise((resolve, reject) => {
       const isRazd = this.isRazdCli();
@@ -415,11 +417,11 @@ class TaskfileService {
         { cwd: dir },
         (err: cp.ExecException | null, stdout: string, stderr: string) => {
           // Cleanup temporary file with delay to allow for concurrent reads
-          if (tempFilePath) {
-            setTimeout(() => {
-              this.deleteTempTaskfile(tempFilePath);
-            }, 2000); // 2 second delay to allow for multiple workspace folders
-          }
+          // if (tempFilePath) {
+          //   setTimeout(() => {
+          //     this.deleteTempTaskfile(tempFilePath);
+          //   }, 2000); // 2 second delay to allow for multiple workspace folders
+          // }
 
           if (err) {
             log.error(err);
@@ -444,15 +446,15 @@ class TaskfileService {
           var taskfile: Namespace = JSON.parse(stdout);
 
           // If we used a temporary file, replace its location with the original file path
-          if (tempFilePath) {
-            taskfile.location = filePath;
-            // Also update location in all tasks
-            taskfile.tasks?.forEach((task) => {
-              if (task.location && task.location.taskfile === tempFilePath) {
-                task.location.taskfile = filePath;
-              }
-            });
-          }
+          // if (tempFilePath) {
+          //   taskfile.location = filePath;
+          //   // Also update location in all tasks
+          //   taskfile.tasks?.forEach((task) => {
+          //     if (task.location && task.location.taskfile === tempFilePath) {
+          //       task.location.taskfile = filePath;
+          //     }
+          //   });
+          // }
 
           if (path.dirname(taskfile.location) !== dir) {
             log.info(
