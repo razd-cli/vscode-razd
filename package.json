@@ -5,7 +5,7 @@
   "homepage": "https://github.com/razd-cli/vscode-razd",
   "icon": "res/icon.png",
   "license": "MIT",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "publisher": "razd-cli",
   "author": {
     "name": "Razd Contributors",
@@ -127,7 +127,7 @@
       },
       {
         "command": "vscode-razd.runRazd",
-        "title": "Run Razd",
+        "title": "Run Task",
         "category": "Razd",
         "icon": "$(play)"
       }

@@ -36,7 +36,7 @@ public async open(dir: string): Promise<void> {
 public async init(dir: string): Promise<void> {
     log.info(`Initialising taskfile in: "${dir}"`);
     return await new Promise((resolve) => {
-        let command = this.command('--init');
+        let command = this.command('up --init');
         cp.exec(command, { cwd: dir }, (_, stdout: string, stderr: string) => {
             if (stderr) {
                 vscode.window.showErrorMessage(stderr);

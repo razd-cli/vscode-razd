@@ -333,7 +333,7 @@ export class TaskExtension {
       })
     );
 
-    // Run Razd - show task picker
+    // Run Razd - initialize with razd up --init
     context.subscriptions.push(
       vscode.commands.registerCommand('vscode-razd.runRazd', () => {
         log.info('Command: vscode-razd.runRazd');

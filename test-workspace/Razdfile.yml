@@ -4,7 +4,10 @@ mise:
     task: latest
     
 tasks:
+  default:
+    cmds:
+      - task: hello
   hello:
     desc: Test task from Razdfile
     cmds:
-      - echo "Hello from Razdfile!"  {{.CLI_ARGS}}
+      - echo "Hello from Razdfile! {{.CLI_ARGS}}"

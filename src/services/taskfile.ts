@@ -122,13 +122,32 @@ class TaskfileService {
       return cliPath;
     }
 
+    // Razd native subcommands that should not be wrapped with 'run'
+    const RAZD_SUBCOMMANDS = [
+      'up',
+      'list',
+      'install',
+      'setup',
+      'dev',
+      'build',
+      'run'
+    ];
+
     // For Razd CLI, add appropriate subcommand
     let processedCommand = command;
     if (isRazd) {
+      const firstWord = command.split(/\s+/)[0];
+
       if (command.includes('--list-all')) {
         // List tasks: razd list --list-all --json
         processedCommand = `list ${command}`;
         log.info(`Using Razd CLI: adding 'list' subcommand`);
+      } else if (RAZD_SUBCOMMANDS.includes(firstWord)) {
+        // Native Razd subcommand - pass through as-is
+        processedCommand = command;
+        log.info(
+          `Using Razd CLI: '${firstWord}' is a native subcommand, passing through`
+        );
       } else if (!command.startsWith('--')) {
         // Run task: razd run <task-name>
         processedCommand = `run ${command}`;
@@ -347,7 +366,7 @@ class TaskfileService {
   public async init(dir: string): Promise<void> {
     log.info(`Initialising taskfile in: "${dir}"`);
     return await new Promise((resolve) => {
-      let command = this.command('--init');
+      let command = this.command('up --init');
       cp.exec(command, { cwd: dir }, (_, stdout: string, stderr: string) => {
         if (stderr) {
           vscode.window.showErrorMessage(stderr);
