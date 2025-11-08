@@ -63,7 +63,7 @@ class Settings {
     // Set the properties
     this.updateOn = config.get('updateOn') ?? UpdateOn.save;
     this.path = config.get('path') ?? 'razd';
-    this.outputTo = config.get('outputTo') ?? OutputTo.output;
+    this.outputTo = config.get('outputTo') ?? OutputTo.terminal;
     this.checkForUpdates = config.get('checkForUpdates') ?? true;
     this.doubleClickTimeout = config.get('doubleClickTimeout') ?? 0;
     this.tree = new TreeSettings();

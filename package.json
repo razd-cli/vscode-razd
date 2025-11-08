@@ -299,8 +299,8 @@
                 "output",
                 "terminal"
               ],
-              "default": "output",
-              "description": "Where to print the output of tasks. Note that the output panel does not support ANSI colors."
+              "default": "terminal",
+              "description": "Where to print the output of tasks. Use 'terminal' for full ANSI color support and interactivity (default), or 'output' for a read-only panel."
             },
             "checkForUpdates": {
               "type": "boolean",

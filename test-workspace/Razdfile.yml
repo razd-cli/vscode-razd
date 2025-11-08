@@ -7,4 +7,4 @@ tasks:
   hello:
     desc: Test task from Razdfile
     cmds:
-      - echo "Hello from Razdfile!"
+      - echo "Hello from Razdfile!"  {{.CLI_ARGS}}

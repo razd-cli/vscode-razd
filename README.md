@@ -39,12 +39,12 @@ Install from [Visual Studio Code Marketplace](https://marketplace.visualstudio.c
 
 ## Configuration
 
-| Setting              | Type      | Allowed Values                    | Default     | Description                                                                                                                                   |
-| -------------------- | --------- | --------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `updateOn`           | `string`  | `"manual"`, `"save"`              | `"save"`    | When the list of tasks should be updated.                                                                                                     |
-| `path`               | `string`  |                                   | `"razd"`    | Path to the Razd/Task binary. Can be a binary name in your `$PATH` or an absolute path. Set to `"task"` to use Task CLI instead of Razd.     |
-| `outputTo`           | `string`  | `"output"`, `"terminal"`          | `"output"`  | Where to print the output of tasks. Note that the output panel does not support ANSI colors.                                                  |
-| `checkForUpdates`    | `boolean` |                                   | `true`      | Check if there is a newer version on startup.                                                                                                 |
+| Setting              | Type      | Allowed Values                    | Default       | Description                                                                                                                                   |
+| -------------------- | --------- | --------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `updateOn`           | `string`  | `"manual"`, `"save"`              | `"save"`      | When the list of tasks should be updated.                                                                                                     |
+| `path`               | `string`  |                                   | `"razd"`      | Path to the Razd/Task binary. Can be a binary name in your `$PATH` or an absolute path. Set to `"task"` to use Task CLI instead of Razd.     |
+| `outputTo`           | `string`  | `"output"`, `"terminal"`          | `"terminal"`  | Where to print the output of tasks. Use `"terminal"` for full ANSI color support and interactivity, or `"output"` for a read-only panel.     |
+| `checkForUpdates`    | `boolean` |                                   | `true`        | Check if there is a newer version on startup.                                                                                                 |
 | `doubleClickTimeout` | `number`  |                                   | `0`         | Time in milliseconds to consider a double-click. 0 disables double-click to run. 500 is a good starting point if you want to enable it.       |
 | `tree.nesting`       | `boolean` |                                   | `true`      | Whether to nest tasks by their namespace in the tree view.                                                                                    |
 | `tree.status`        | `boolean` |                                   | `false`     | Whether to show the status of tasks in the tree view (may be slow on large Taskfiles/Razdfiles).                                              |
