@@ -43,7 +43,7 @@
     "commands": [
       {
         "command": "vscode-razd.init",
-        "title": "Initialize Taskfile",
+        "title": "Initialize Razdfile",
         "category": "Razd",
         "icon": "$(plus)"
       },
@@ -124,6 +124,12 @@
         "title": "Show Debug Panel",
         "category": "Razd",
         "icon": "$(debug)"
+      },
+      {
+        "command": "vscode-razd.runRazd",
+        "title": "Run Razd",
+        "category": "Razd",
+        "icon": "$(play)"
       }
     ],
     "viewsContainers": {
@@ -156,7 +162,7 @@
       },
       {
         "view": "vscode-razd.tasks",
-        "contents": "No Taskfile found in this workspace. Click the button below to get started and initialize a new Taskfile.\n[Initialize Taskfile](command:vscode-razd.init)\nTo learn more about how to use Task, [read our docs](https://taskfile.dev).",
+        "contents": "No Taskfile found in this workspace. Click the button below to get started and initialize a new Razdfile.\n[Initialize Razdfile](command:vscode-razd.init)\nTo learn more about how to use Razd, [read our docs](https://razd-cli.github.io/docs/guide/).",
         "when": "vscode-razd:status == 'noTaskfile'"
       },
       {
@@ -181,6 +187,11 @@
         }
       ],
       "view/title": [
+        {
+          "command": "vscode-razd.runRazd",
+          "when": "view == vscode-razd.tasks",
+          "group": "navigation@0"
+        },
         {
           "command": "vscode-razd.openUsage",
           "when": "view == vscode-razd.tasks",

@@ -327,7 +327,28 @@ export class TaskExtension {
     context.subscriptions.push(
       vscode.commands.registerCommand('vscode-razd.openUsage', () => {
         log.info('Command: vscode-razd.openUsage');
-        vscode.env.openExternal(vscode.Uri.parse('https://taskfile.dev/usage'));
+        vscode.env.openExternal(
+          vscode.Uri.parse('https://razd-cli.github.io/docs/guide/')
+        );
+      })
+    );
+
+    // Run Razd - show task picker
+    context.subscriptions.push(
+      vscode.commands.registerCommand('vscode-razd.runRazd', () => {
+        log.info('Command: vscode-razd.runRazd');
+        let items: vscode.QuickPickItem[] = this._loadTasksFromTaskfile();
+
+        if (items.length === 0) {
+          vscode.window.showInformationMessage('No tasks found');
+          return;
+        }
+
+        vscode.window.showQuickPick(items).then((item) => {
+          if (item && item instanceof QuickPickTaskItem) {
+            taskfileSvc.runTask(item.label, item.namespace.workspace);
+          }
+        });
       })
     );
 
