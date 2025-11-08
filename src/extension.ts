@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import { log } from './utils/log.js';
 import { TaskExtension } from './task.js';
 import { ToolService } from './services/copilot/tools/toolService.js';
-import { HelloWorldTool } from './services/copilot/tools/helloWorldTool/helloWorldTool.js';
 import { RazdGettingStartedTool } from './services/copilot/tools/razdGettingStartedTool/razdGettingStartedTool.js';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -21,7 +20,6 @@ export function activate(context: vscode.ExtensionContext) {
   // Register MCP tools
   try {
     const toolService = new ToolService();
-    toolService.addTool(new HelloWorldTool());
     toolService.addTool(new RazdGettingStartedTool());
     toolService.registerTools(context);
   } catch (error) {

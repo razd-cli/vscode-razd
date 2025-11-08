@@ -5,7 +5,7 @@
   "homepage": "https://github.com/razd-cli/vscode-razd",
   "icon": "res/icon.png",
   "license": "MIT",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "publisher": "razd-cli",
   "author": {
     "name": "Razd Contributors",
@@ -378,26 +378,6 @@
       }
     },
     "languageModelTools": [
-      {
-        "name": "razd_hello_world",
-        "displayName": "Razd Hello World",
-        "toolReferenceName": "razdHelloWorld",
-        "userDescription": "Displays a Hello World message in VS Code",
-        "modelDescription": "Use this tool to display a 'Hello World' information message in VS Code. This is a demonstration tool that shows how MCP tools integrate with the Razd extension. The tool requires no parameters and will show a confirmation dialog before executing. Returns a JSON response with success status and timestamp.",
-        "icon": "$(comment-discussion)",
-        "tags": [
-          "demo",
-          "greeting",
-          "razd",
-          "hello-world"
-        ],
-        "canBeReferencedInPrompt": true,
-        "inputSchema": {
-          "type": "object",
-          "properties": {},
-          "required": []
-        }
-      },
       {
         "name": "razd_getting_started",
         "displayName": "Razd Getting Started Guide",

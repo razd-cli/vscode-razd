@@ -9,7 +9,6 @@
   - Tools can be invoked by AI assistants like GitHub Copilot
   - Includes base `Tool` abstract class for future tool implementations
   - Includes `ToolService` for centralized tool management
-  - **Hello World Tool**: Demonstrates tool confirmation dialogs and VS Code integration
   - **Razd Getting Started Tool**: Provides comprehensive Razd setup guide with:
     - Complete Razdfile.yml template with mise tools configuration
     - Essential Razd commands (razd, razd install, razd dev, razd build)
