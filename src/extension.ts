@@ -3,6 +3,7 @@ import { log } from './utils/log.js';
 import { TaskExtension } from './task.js';
 import { ToolService } from './services/copilot/tools/toolService.js';
 import { HelloWorldTool } from './services/copilot/tools/helloWorldTool/helloWorldTool.js';
+import { RazdGettingStartedTool } from './services/copilot/tools/razdGettingStartedTool/razdGettingStartedTool.js';
 
 export function activate(context: vscode.ExtensionContext) {
   log.info('Extension activated');
@@ -21,6 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
   try {
     const toolService = new ToolService();
     toolService.addTool(new HelloWorldTool());
+    toolService.addTool(new RazdGettingStartedTool());
     toolService.registerTools(context);
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);

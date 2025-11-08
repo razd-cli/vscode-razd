@@ -4,12 +4,17 @@
 
 ### Added
 
-- **MCP Tools Support**: Introduced the first MCP (Model Context Protocol) tool - Hello World Tool
+- **MCP Tools Support**: Introduced MCP (Model Context Protocol) tools for AI assistant integration
   - Added infrastructure for creating and registering language model tools
   - Tools can be invoked by AI assistants like GitHub Copilot
   - Includes base `Tool` abstract class for future tool implementations
   - Includes `ToolService` for centralized tool management
-  - Hello World tool demonstrates tool confirmation dialogs and VS Code integration
+  - **Hello World Tool**: Demonstrates tool confirmation dialogs and VS Code integration
+  - **Razd Getting Started Tool**: Provides comprehensive Razd setup guide with:
+    - Complete Razdfile.yml template with mise tools configuration
+    - Essential Razd commands (razd, razd install, razd dev, razd build)
+    - Project structure and setup instructions
+    - Documentation and next steps
 
 ### Breaking Changes
 

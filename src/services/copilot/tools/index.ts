@@ -8,3 +8,4 @@
 export { Tool } from './tool.js';
 export { ToolService } from './toolService.js';
 export { HelloWorldTool } from './helloWorldTool/helloWorldTool.js';
+export { RazdGettingStartedTool } from './razdGettingStartedTool/razdGettingStartedTool.js';

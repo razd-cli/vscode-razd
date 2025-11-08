@@ -397,6 +397,30 @@
           "properties": {},
           "required": []
         }
+      },
+      {
+        "name": "razd_getting_started",
+        "displayName": "Razd Getting Started Guide",
+        "toolReferenceName": "razdGettingStarted",
+        "userDescription": "Provides comprehensive guide for setting up Razd projects with Razdfile.yml",
+        "modelDescription": "Use this tool when users need help with Razd project setup, Razdfile.yml creation, or want to understand Razd workflow. This tool provides: 1) Complete Razdfile.yml template with mise tools configuration, 2) List of essential Razd commands (razd, razd install, razd dev, razd build, razd run), 3) Guide on mise tools setup, 4) Project structure requirements, 5) Next steps for getting started. Returns comprehensive JSON with templates, commands, and documentation links. Invoke when users ask about: 'how to use Razd', 'create Razdfile', 'Razd setup', 'Razd commands', 'mise tools', or any getting started questions.",
+        "icon": "$(book)",
+        "tags": [
+          "razd",
+          "getting-started",
+          "setup",
+          "guide",
+          "razdfile",
+          "mise",
+          "documentation",
+          "help"
+        ],
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
       }
     ]
   },
