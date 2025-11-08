@@ -1,10 +1,12 @@
 import { Endpoints } from '@octokit/types';
 import * as cp from 'child_process';
 import * as fs from 'fs';
+import * as os from 'os';
 import { Octokit } from 'octokit';
 import * as path from 'path';
 import * as semver from 'semver';
 import * as vscode from 'vscode';
+import * as yaml from 'js-yaml';
 import { Namespace, Task } from '../models/models.js';
 import {
   OutputTo,
@@ -89,25 +91,94 @@ class TaskfileService {
     const cliPath = settings.path;
     let taskfileOption = '';
 
-    // If we detected a Razdfile, add --taskfile option
-    if (
-      taskfilePath &&
-      path.basename(taskfilePath).toLowerCase().startsWith('razd')
-    ) {
-      taskfileOption = `--taskfile ${taskfilePath}`;
+    // If we detected a Razdfile (check both original and temp files), add --taskfile option
+    if (taskfilePath) {
+      const basename = path.basename(taskfilePath).toLowerCase();
+      log.info(
+        `command() called with taskfilePath: "${taskfilePath}", basename: "${basename}"`
+      );
+      // Check if it's a Razdfile or a temp file created from Razdfile
+      if (basename.startsWith('razd') || basename.includes('razdfile')) {
+        taskfileOption = `--taskfile ${taskfilePath}`;
+        log.info(`Using --taskfile option: "${taskfileOption}"`);
+      } else {
+        log.info(`Not a Razdfile, using default behavior`);
+      }
     }
 
     if (command === undefined) {
       return cliPath;
     }
-    if (cliArgs === undefined) {
-      return taskfileOption
-        ? `${cliPath} ${taskfileOption} ${command}`
-        : `${cliPath} ${command}`;
+
+    const finalCommand =
+      cliArgs === undefined
+        ? taskfileOption
+          ? `${cliPath} ${taskfileOption} ${command}`
+          : `${cliPath} ${command}`
+        : taskfileOption
+        ? `${cliPath} ${taskfileOption} ${command} -- ${cliArgs}`
+        : `${cliPath} ${command} -- ${cliArgs}`;
+
+    log.info(`Final command: "${finalCommand}"`);
+    return finalCommand;
+  }
+
+  /**
+   * Creates a temporary taskfile with version field if missing
+   * @param filePath Original taskfile path
+   * @returns Path to temporary file or original file if version exists
+   */
+  private async createTempTaskfileIfNeeded(
+    filePath: string
+  ): Promise<string | null> {
+    try {
+      const content = fs.readFileSync(filePath, 'utf8');
+      const parsed = yaml.load(content) as any;
+
+      // If version already exists, use original file
+      if (parsed && parsed.version) {
+        log.info(`File "${filePath}" already has version field`);
+        return null;
+      }
+
+      // Create temporary file in the same directory as the original file
+      // Use .tmp extension instead of .yml to avoid triggering FileSystemWatcher
+      const dir = path.dirname(filePath);
+      const originalName = path.basename(filePath, path.extname(filePath));
+      const tmpFileName = `.${originalName}.tmp-${Date.now()}.tmp`;
+      const tmpFilePath = path.join(dir, tmpFileName);
+
+      // Add version at the beginning
+      const withVersion = { version: '3', ...parsed };
+      const yamlContent = yaml.dump(withVersion);
+
+      fs.writeFileSync(tmpFilePath, yamlContent, 'utf8');
+      log.info(`Created temporary taskfile: "${tmpFilePath}"`);
+
+      return tmpFilePath;
+    } catch (error) {
+      log.error(`Failed to create temporary taskfile: ${error}`);
+      return null;
     }
-    return taskfileOption
-      ? `${cliPath} ${taskfileOption} ${command} -- ${cliArgs}`
-      : `${cliPath} ${command} -- ${cliArgs}`;
+  }
+
+  /**
+   * Deletes temporary taskfile
+   * @param filePath Path to temporary file
+   */
+  private deleteTempTaskfile(filePath: string | null): void {
+    if (!filePath) {
+      return;
+    }
+
+    try {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        log.info(`Deleted temporary taskfile: "${filePath}"`);
+      }
+    } catch (error) {
+      log.error(`Failed to delete temporary taskfile: ${error}`);
+    }
   }
 
   public async checkInstallation(checkForUpdates?: boolean): Promise<string> {
@@ -272,6 +343,10 @@ class TaskfileService {
     this.detectedTaskfilePath = filePath;
     log.info(`Found taskfile: ${filePath}`);
 
+    // Create temporary file with version if needed
+    const tempFilePath = await this.createTempTaskfileIfNeeded(filePath);
+    const fileToUse = tempFilePath || filePath;
+
     return await new Promise((resolve, reject) => {
       let flags = ['--list-all', '--json'];
       // Optional flags
@@ -284,11 +359,18 @@ class TaskfileService {
       if (!status) {
         flags.push(`--no-status`);
       }
-      let command = this.command(`${flags.join(' ')}`, undefined, filePath);
+      let command = this.command(`${flags.join(' ')}`, undefined, fileToUse);
       cp.exec(
         command,
         { cwd: dir },
         (err: cp.ExecException | null, stdout: string, stderr: string) => {
+          // TODO: Cleanup temporary file - currently disabled for debugging
+          // if (tempFilePath) {
+          //   setTimeout(() => {
+          //     this.deleteTempTaskfile(tempFilePath);
+          //   }, 1000);
+          // }
+
           if (err) {
             log.error(err);
             let shouldDisplayError = false;
@@ -310,6 +392,18 @@ class TaskfileService {
             return resolve(undefined);
           }
           var taskfile: Namespace = JSON.parse(stdout);
+
+          // If we used a temporary file, replace its location with the original file path
+          if (tempFilePath) {
+            taskfile.location = filePath;
+            // Also update location in all tasks
+            taskfile.tasks?.forEach((task) => {
+              if (task.location && task.location.taskfile === tempFilePath) {
+                task.location.taskfile = filePath;
+              }
+            });
+          }
+
           if (path.dirname(taskfile.location) !== dir) {
             log.info(
               `Ignoring taskfile: "${taskfile.location}" (outside of workspace)`
